@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '9.0'
+
+target 'QWNetWork_Example' do
+  pod 'QWNetWork', :path => '../'
+
+  target 'QWNetWork_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
