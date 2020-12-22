@@ -1,0 +1,6 @@
+framework module QWNetWork {
+  umbrella header "QWNetWork-umbrella.h"
+
+  export *
+  module * { export * }
+}

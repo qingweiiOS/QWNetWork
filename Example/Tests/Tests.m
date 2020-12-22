@@ -2,8 +2,8 @@
 //  QWNetWorkTests.m
 //  QWNetWorkTests
 //
-//  Created by 772053795@qq.com on 12/22/2020.
-//  Copyright (c) 2020 772053795@qq.com. All rights reserved.
+//  Created by Mr.Q on 12/22/2020.
+//  Copyright (c) 2020 Mr.Q. All rights reserved.
 //
 
 @import XCTest;

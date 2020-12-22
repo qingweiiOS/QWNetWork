@@ -1,0 +1,6 @@
+framework module Pods_QWNetWork_Example {
+  umbrella header "Pods-QWNetWork_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}
