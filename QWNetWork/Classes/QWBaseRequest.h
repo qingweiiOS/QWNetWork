@@ -136,7 +136,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 取消所有任务
 - (void)cancelAllTask;
-
 /// 取消指定任务
 - (void)cancelTask;
 @end

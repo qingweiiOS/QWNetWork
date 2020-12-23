@@ -35,11 +35,11 @@
     BOOL isSetHUD;
 }
 ///请求成功
-@property (nonatomic, copy) requestSuccess success;
+@property (nonatomic, copy) successBlock success;
 ///请求失败
-@property (nonatomic, copy) requestFailure failure;
+@property (nonatomic, copy) failureBlock failure;
 ///请求进度
-@property (nonatomic, copy) uploadProgress progres;
+@property (nonatomic, copy) progressBlock progres;
 @end
 @implementation QWBaseRequest
 
@@ -48,7 +48,7 @@
                                           progres:(progressBlock)progres{
     if(success)_success = success;
     if(failure)_failure = failure;
-    if(progres)_failure = progres;
+    if(progres)_progres = progres;
     if(!isSetHUD)self.isCloseHUD = [QWNetWorkCig netWorkCig].closeHUD;
     
     [self showHUD];
@@ -134,7 +134,6 @@
 }
 - (void)optionData:(id)responseObject orError:(NSError *)error{
     [self dismissHUD];
-    
     Class responseClass = NSClassFromString(self.responseClassName);
     QWBaseResponse *response;
     _responseData = responseObject;
