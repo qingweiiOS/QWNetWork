@@ -14,11 +14,11 @@ PODS:
   - AFNetworking/Serialization (4.0.1)
   - AFNetworking/UIKit (4.0.1):
     - AFNetworking/NSURLSession
-  - QWNetWork (0.1.0):
+  - QWNetWork (0.1.1):
     - AFNetworking
-    - SVProgressHUD
+    - QWProgressHUD
     - YYModel
-  - SVProgressHUD (2.2.5)
+  - QWProgressHUD (0.2.0)
   - YYModel (1.0.4)
 
 DEPENDENCIES:
@@ -27,7 +27,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - AFNetworking
-    - SVProgressHUD
+    - QWProgressHUD
     - YYModel
 
 EXTERNAL SOURCES:
@@ -36,8 +36,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: 7864c38297c79aaca1500c33288e429c3451fdce
-  QWNetWork: cc378859f75c09bc81ef8622456442281bc28414
-  SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
+  QWNetWork: 1df7a0f9e03605d858c5c3f468aae4a426f95f8b
+  QWProgressHUD: c409765d6d020a8f68695de6e1e342cba4495293
   YYModel: 2a7fdd96aaa4b86a824e26d0c517de8928c04b30
 
 PODFILE CHECKSUM: 430a95f67bd2496d84119b4064fde8e9976c13e2

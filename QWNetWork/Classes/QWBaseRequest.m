@@ -25,7 +25,7 @@
 #define GCD_MAIN(Block) dispatch_async(dispatch_get_main_queue(),Block);
 
 #import "QWBaseRequest.h"
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <QWProgressHUD/QWProgressHUD.h>
 #import <YYModel/YYModel.h>
 #import "QWBaseModel.h"
 #import "QWBaseResponse.h"
@@ -228,26 +228,26 @@
 - (void)showErrorMsg:(NSString *)Msg{
     
     if(!self.isCloseHUD){
-        [SVProgressHUD showErrorWithStatus:Msg];
+        [QWProgressHUD showError:Msg];
     }
 }
 - (void)showSuccessMsg:(NSString *)Msg{
     
     if(!self.isCloseHUD){
-        [SVProgressHUD showSuccessWithStatus:Msg];
+        [QWProgressHUD showSuccess:Msg];
     }
 }
 - (void)showHUD{
     if(!self.isCloseHUD){
-        if(![SVProgressHUD isVisible]){
-            [SVProgressHUD show];
+        if(![QWProgressHUD isDisplay]){
+            [QWProgressHUD show];
         }
     }
 }
 - (void)dismissHUD{
    
     if(!self.isCloseHUD){
-        [SVProgressHUD dismiss];
+        [QWProgressHUD dismiss];
     }
 }
 #pragma mark - getter & setter

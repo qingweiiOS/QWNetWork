@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'QWNetWork'
-  s.version          = '0.1.1'
+  s.version          = '0.1.2'
   s.summary          = '基于AFNetWorking封装,个人使用,有兴趣可以告一哈！'
 
 # This description is used to generate tags and improve search results.
@@ -30,5 +30,5 @@ TODO: Add long description of the pod here.
    s.source_files = 'QWNetWork/Classes/**/*'
    s.dependency   'AFNetworking'
    s.dependency   'YYModel'
-   s.dependency   'SVProgressHUD'
+   s.dependency   'QWProgressHUD'
 end

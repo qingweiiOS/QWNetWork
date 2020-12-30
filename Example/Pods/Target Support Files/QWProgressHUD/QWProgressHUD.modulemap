@@ -1,0 +1,6 @@
+framework module QWProgressHUD {
+  umbrella header "QWProgressHUD-umbrella.h"
+
+  export *
+  module * { export * }
+}

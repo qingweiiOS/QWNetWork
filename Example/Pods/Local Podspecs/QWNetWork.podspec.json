@@ -1,7 +1,7 @@
 {
   "name": "QWNetWork",
-  "version": "0.1.0",
-  "summary": "基于AFNetWorking封装",
+  "version": "0.1.1",
+  "summary": "基于AFNetWorking封装,个人使用,有兴趣可以告一哈！",
   "description": "TODO: Add long description of the pod here.",
   "homepage": "https://github.com/qingweiiOS/QWNetWork",
   "license": {
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/qingweiiOS/QWNetWork.git",
-    "tag": "0.1.0"
+    "tag": "0.1.1"
   },
   "platforms": {
     "ios": "9.0"
@@ -26,7 +26,7 @@
     "YYModel": [
 
     ],
-    "SVProgressHUD": [
+    "QWProgressHUD": [
 
     ]
   }
