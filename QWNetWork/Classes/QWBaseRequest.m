@@ -32,14 +32,20 @@
 #import "QWNetRequest.h"
 #import "QWNetWorkCig.h"
 @interface QWBaseRequest(){
+    /**当前请求是否设置了isCloseHUD属性，未设置就使用全局配置*/
     BOOL isSetHUD;
+    /**当前请求是否设置了isBanInteraction属性，未设置使用全局配置*/
+    BOOL isSetBanInteraction;
+    
+    NSDictionary *headDic;
 }
-///请求成功
+/**请求成功*/
 @property (nonatomic, copy) successBlock success;
-///请求失败
+/**请求失败*/
 @property (nonatomic, copy) failureBlock failure;
-///请求进度
+/**请求进度*/
 @property (nonatomic, copy) progressBlock progres;
+
 @end
 @implementation QWBaseRequest
 
@@ -49,9 +55,27 @@
     if(success)_success = success;
     if(failure)_failure = failure;
     if(progres)_progres = progres;
+    /**当前请求是否设置了isCloseHUD属性，未设置就使用全局配置*/
     if(!isSetHUD)self.isCloseHUD = [QWNetWorkCig netWorkCig].closeHUD;
-    
     [self showHUD];
+    
+    /**当前请求是否设置了isBanInteraction属性，未设置使用全局配置*/
+    if(!isSetBanInteraction)self.isBanInteraction = [QWNetWorkCig netWorkCig].isBanInteraction;
+    if(self.isBanInteraction){
+        [self currentViewController].view.userInteractionEnabled = NO;
+    }
+    /// 是否有公共参数追加
+    if(self.publicParameters.count>0){
+        NSMutableDictionary *requestDic = [NSMutableDictionary dictionaryWithDictionary:self.requestParameters];
+        [requestDic addEntriesFromDictionary:self.publicParameters];
+        self.requestParameters = requestDic;
+    }
+    /** 优先使用 当前请求的请求头 ，如果当前请求头未设置请求头 尝试加载公共请求头（继承当前类，重写requestHead属性的get方法）*/
+    NSDictionary *headDic = _requestHead;
+    if(!headDic){
+        headDic = self.requestHead;
+    }
+    
     _isOngoing = YES;
     if(self.requestType == QWRequestMethodPOST){
         return [self post];
@@ -103,7 +127,8 @@
 #pragma mark - 内部函数
 - (NSURLSessionDataTask * )post{
     QWEAKSELF
-    _dataTask = [QWNetRequest POSTWebServiceAPI:self.requestURL parameter:self.requestParameters head:self.requestHead progress:^(NSProgress *uploadProgress){
+  
+    _dataTask = [QWNetRequest POSTWebServiceAPI:self.requestURL parameter:self.requestParameters head:headDic progress:^(NSProgress *uploadProgress){
         if(weakSelf.progres) weakSelf.progres(uploadProgress);
     }success:^(id data) {
         GCD_MAIN(^{
@@ -117,10 +142,9 @@
     return _dataTask;
 }
 - (NSURLSessionDataTask *)get{
-    
     _dataTask = [QWNetRequest GETWebServiceAPI:self.requestURL
                                      parameter:self.requestParameters
-                                          head:self.requestHead
+                                          head:headDic
                                        success:^(id data) {
         GCD_MAIN(^{
             [self optionData:data orError:nil];
@@ -134,6 +158,9 @@
 }
 - (void)optionData:(id)responseObject orError:(NSError *)error{
     [self dismissHUD];
+    if(self.isBanInteraction){
+        [self currentViewController].view.userInteractionEnabled = YES;
+    }
     Class responseClass = NSClassFromString(self.responseClassName);
     QWBaseResponse *response;
     _responseData = responseObject;
@@ -150,11 +177,10 @@
         
     }else{
         NSDictionary *obj = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        NSLog(@"%@",obj);
         _responseDic = obj;
         if([obj isKindOfClass:[NSDictionary class]]){
             response = [responseClass yy_modelWithJSON:obj];
-            if([response.code isEqualToString:[QWNetWorkCig netWorkCig].requestSuccessCode]){/// 数据成功
+            if([response.code isEqualToString:[QWNetWorkCig netWorkCig].successCodeStr]){/// 数据成功
                 [self showSuccessMsg:response.message];
                 [QWBaseModel printPropertyWithDict:response.data];
                 if(self.modelName.length>0){
@@ -203,30 +229,52 @@
         
     }
     if(error){
-        
         NSLog(@"\n 「api」-- : %@ \n 「code」-- : %ld\n 「msg」-- : %@",self.requestURL,(long)response.code,response.message);
         NSLog(@"\n 参数：%@",self.requestParameters);
         NSLog(@"\n 「errorData」-- : %@",[[NSString alloc] initWithData:[error.userInfo objectForKey:@"com.alamofire.serialization.response.error.data"] encoding:NSUTF8StringEncoding]);
-    }else{
-        NSLog(@"\n 参数：%@",self.requestParameters);
-        NSLog(@"\n 「api」-- : %@ \n 「code」-- : %ld\n 「msg」-- : %@\n 「data」-- : %@",self.requestURL,(long)response.code,response.message,[[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding]);
     }
-    
     _isOngoing = NO;
     [self clearBlock];
 }
-
-
 - (void)clearBlock{
     _success = nil;
     _failure = nil;
     _progres = nil;
 }
 
+- (UIViewController *)rootViewController{
+    
+    UIWindow* window = [[[UIApplication sharedApplication] delegate] window];
+    NSAssert(window, @"The window is empty");
+    return window.rootViewController;
+}
+- (UIViewController *)currentViewController{
+    
+    UIViewController* currentViewController = [self rootViewController];
+    BOOL runLoopFind = YES;
+    while (runLoopFind) {
+        if (currentViewController.presentedViewController) {
+            
+            currentViewController = currentViewController.presentedViewController;
+        } else if ([currentViewController isKindOfClass:[UINavigationController class]]) {
+            
+            UINavigationController* navigationController = (UINavigationController* )currentViewController;
+            currentViewController = [navigationController.childViewControllers lastObject];
+            
+        } else if ([currentViewController isKindOfClass:[UITabBarController class]]) {
+            
+            UITabBarController* tabBarController = (UITabBarController* )currentViewController;
+            currentViewController = tabBarController.selectedViewController;
+        }else{
+            runLoopFind = NO;
+        }
+        
+    }
+    return currentViewController;
+}
 
 #pragma mark - hud
 - (void)showErrorMsg:(NSString *)Msg{
-    
     if(!self.isCloseHUD){
         [QWProgressHUD showError:Msg];
     }
@@ -245,7 +293,6 @@
     }
 }
 - (void)dismissHUD{
-   
     if(!self.isCloseHUD){
         [QWProgressHUD dismiss];
     }
@@ -255,10 +302,14 @@
     _isCloseHUD = isCloseHUD;
     isSetHUD = YES;
 }
+- (void)setIsBanInteraction:(BOOL)isBanInteraction{
+    _isBanInteraction = isBanInteraction;
+    isSetBanInteraction = YES;
+}
 - (NSString *)responseClassName{
     
     if(_responseClassName.length == 0){
-        _responseClassName = [QWBaseResponse className];
+        _responseClassName = NSStringFromClass([QWBaseResponse class]);
     }
     return _responseClassName;
 }

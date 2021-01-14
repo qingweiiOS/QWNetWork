@@ -21,8 +21,15 @@
 
 #import "QWNetWorkCig.h"
 
+@interface QWNetWorkCig ()
+{
+    NSString *_successCodeStr;
+    NSInteger _successCode;
+}
+@end
 
 @implementation QWNetWorkCig
+@synthesize successCodeStr = _successCodeStr,successCode = _successCode;
 + (QWNetWorkCig *)netWorkCig{
     static QWNetWorkCig *newCig;
     static dispatch_once_t onceToken;
@@ -38,11 +45,22 @@
     return _BaseURL;
 }
 
-- (NSString *)requestSuccessCode{
-    
-    if(_requestSuccessCode.length == 0){
-        _requestSuccessCode = @"200";
+- (NSString *)successCodeStr{
+    if(_successCodeStr.length == 0){
+        _successCodeStr = @"200";
     }
-    return _requestSuccessCode;
+    return _successCodeStr;
+}
+- (NSInteger)successCode{
+   
+    return [self.successCodeStr integerValue];
+}
+- (void)setSuccessCode:(NSInteger)successCode{
+    _successCode = successCode;
+    _successCodeStr = [NSString stringWithFormat:@"%ld",successCode];
+}
+- (void)setSuccessCodeStr:(NSString *)successCodeStr{
+    _successCodeStr = successCodeStr;
+    _successCode = [successCodeStr integerValue];
 }
 @end

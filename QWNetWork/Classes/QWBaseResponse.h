@@ -19,9 +19,9 @@
  *  =====`-.____`.___ \_____/___.-`___.-'=====
  */
 
-#import "QWBaseModel.h"
+#import <Foundation/Foundation.h>
 
-@interface QWBaseResponse : QWBaseModel
+@interface QWBaseResponse : NSObject
 /**
  * 如果和服务器返回的 字段不一样 请继承该类 在.m使用函数映射 （也就是YYModel的映射函数）
  * + (nullable NSDictionary<NSString *, id> *)modelCustomPropertyMapper{

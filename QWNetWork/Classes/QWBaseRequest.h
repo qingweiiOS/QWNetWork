@@ -40,11 +40,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface QWBaseRequest : NSObject
 ///请求结果是否缓存 默认NO
-@property (nonatomic, assign) BOOL isCache;
+//@property (nonatomic, assign) BOOL isCache;
 ///请求地址
 @property (nonatomic, copy)   NSString * requestURL;
 /// 请求参数
 @property (nonatomic, strong) NSDictionary * requestParameters;
+/// 公共参数
+@property (nonatomic, strong) NSDictionary * publicParameters;
 ///请求类型 默认POST
 @property (nonatomic, assign) QWRequestMethod requestType;
 ///请求类型 String
@@ -55,6 +57,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSDictionary * requestHead;
 ///响应对象类型
 @property (nonatomic, copy) NSString * responseClassName;
+/**请求开始时至请求结束期间 是否禁用界面交互  默认NO*/
+@property (nonatomic, assign) BOOL isBanInteraction;
 /*
  * 是否关闭HUD  默认不关闭 如果关闭将由自己写hud逻辑
  * 如果没有明确设置 使用全局设置  [QWNetWorkCig netWorkCig].closeHUD
@@ -71,7 +75,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong , readonly) NSDictionary * responseDic;
 ///响应对象
 @property (nonatomic, strong , readonly) NSData * responseData;
-
 
 /**
  *  网络 请求1
