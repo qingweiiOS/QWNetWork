@@ -29,7 +29,6 @@
 #import <YYModel/YYModel.h>
 #import "QWBaseModel.h"
 #import "QWBaseResponse.h"
-#import "QWNetRequest.h"
 #import "QWNetWorkCig.h"
 @interface QWBaseRequest(){
     /**当前请求是否设置了isCloseHUD属性，未设置就使用全局配置*/
@@ -71,7 +70,7 @@
         self.requestParameters = requestDic;
     }
     /** 优先使用 当前请求的请求头 ，如果当前请求头未设置请求头 尝试加载公共请求头（继承当前类，重写requestHead属性的get方法）*/
-    NSDictionary *headDic = _requestHead;
+    headDic = _requestHead;
     if(!headDic){
         headDic = self.requestHead;
     }
@@ -128,7 +127,11 @@
 - (NSURLSessionDataTask * )post{
     QWEAKSELF
   
-    _dataTask = [QWNetRequest POSTWebServiceAPI:self.requestURL parameter:self.requestParameters head:headDic progress:^(NSProgress *uploadProgress){
+    _dataTask = [QWNetRequest POSTWebServiceAPI:self.requestURL
+                                      parameter:self.requestParameters
+                                           head:headDic
+                                 serializerType:self.serializerType
+                                       progress:^(NSProgress *uploadProgress){
         if(weakSelf.progres) weakSelf.progres(uploadProgress);
     }success:^(id data) {
         GCD_MAIN(^{
@@ -145,6 +148,7 @@
     _dataTask = [QWNetRequest GETWebServiceAPI:self.requestURL
                                      parameter:self.requestParameters
                                           head:headDic
+                                serializerType:self.serializerType
                                        success:^(id data) {
         GCD_MAIN(^{
             [self optionData:data orError:nil];

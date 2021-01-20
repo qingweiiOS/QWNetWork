@@ -97,6 +97,8 @@ pod 'QWNetWork'
 @property (nonatomic, strong) NSDictionary * requestParameters;
 ///请求类型 默认POST
 @property (nonatomic, assign) QWRequestMethod requestType;
+///服务器接收
+@property (nonatomic, assign) QWSerializerType serializerType;
 ///请求类型 String
 @property (nonatomic, copy , readonly) NSString * requestTypeStr;
 ///数据模型 类名

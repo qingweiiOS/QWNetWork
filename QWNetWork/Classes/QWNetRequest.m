@@ -29,14 +29,19 @@
 + (id)POSTWebServiceAPI:(NSString *)webServiceAPI
               parameter:(NSDictionary *)parameterDic
                    head:(NSDictionary *)headDic
+         serializerType:(QWSerializerType)SerializerType
                progress:(uploadProgress)uploadProgress
                 success:(requestSuccess)requestSuccess
                 failure:(requestFailure)requestFailure{
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-//        manager.requestSerializer = [AFJSONRequestSerializer serializer];
-    manager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    if(SerializerType == QWSerializerTypeHTTP){
+        manager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    }else  if(SerializerType == QWSerializerTypeJSON){
+        manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    }
+    
     manager.requestSerializer.timeoutInterval = 30;
     NSString *requestURL = webServiceAPI;
     if(requestURL.length == 0){
@@ -56,13 +61,18 @@
 + (id)GETWebServiceAPI:(NSString *)webServiceAPI
              parameter:(NSDictionary *)parameterDic
                   head:(NSDictionary *)headDic
+        serializerType:(QWSerializerType)SerializerType
                success:(requestSuccess)requestSuccess
                failure:(requestFailure)requestFailure{
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
-    manager.requestSerializer =  [AFHTTPRequestSerializer serializer];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    if(SerializerType == QWSerializerTypeHTTP){
+        manager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    }else  if(SerializerType == QWSerializerTypeJSON){
+        manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    }
+    
     manager.requestSerializer.timeoutInterval = 30;
     NSString *requestURL = webServiceAPI;
     if(requestURL.length == 0){

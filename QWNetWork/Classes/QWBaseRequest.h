@@ -20,6 +20,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import "QWNetRequest.h"
 @class QWBaseResponse;
 /// 请求类型
 typedef NS_ENUM(NSInteger, QWRequestMethod) {
@@ -49,6 +50,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSDictionary * publicParameters;
 ///请求类型 默认POST
 @property (nonatomic, assign) QWRequestMethod requestType;
+///服务器接收
+@property (nonatomic, assign) QWSerializerType serializerType;
 ///请求类型 String
 @property (nonatomic, copy , readonly) NSString * requestTypeStr;
 ///数据模型 类名

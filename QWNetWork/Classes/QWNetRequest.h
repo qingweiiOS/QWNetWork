@@ -26,7 +26,11 @@ typedef void(^requestSuccess)(id _Nullable data);
 typedef void(^requestFailure)(id _Nonnull error);
 ///请求进度
 typedef void(^uploadProgress)(NSProgress * _Nonnull uploadProgress);
-
+///序列化类型
+typedef NS_ENUM(NSInteger, QWSerializerType) {
+    QWSerializerTypeHTTP = 0,
+    QWSerializerTypeJSON,
+};
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -45,6 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (id)POSTWebServiceAPI:(NSString *)webServiceAPI
               parameter:(NSDictionary *)parameterDic
                    head:(NSDictionary *)headDic
+         serializerType:(QWSerializerType)SerializerType
                progress:(uploadProgress)uploadProgress
                 success:(requestSuccess)success
                 failure:(requestFailure)failure;
@@ -60,6 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (id)GETWebServiceAPI:(NSString *)webServiceAPI
                parameter:(NSDictionary *)parameterDic
                     head:(NSDictionary *)headDic
+          serializerType:(QWSerializerType)SerializerType
                  success:(requestSuccess)success
                  failure:(requestFailure)failure;
 /**

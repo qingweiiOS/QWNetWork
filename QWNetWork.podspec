@@ -8,8 +8,8 @@
 
 Pod::Spec.new do |s|
   s.name             = 'QWNetWork'
-  s.version          = '0.1.3'
-  s.summary          = '基于AFNetWorking封装,个人使用,有兴趣可以告一哈！'
+  s.version          = '0.1.4'
+  s.summary          = '基于 AFNetWorking YYModel QWProgressHUD封装，封装程度高，可扩展性不足！'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
