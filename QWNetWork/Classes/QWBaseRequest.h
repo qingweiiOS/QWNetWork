@@ -24,10 +24,18 @@
 @class QWBaseResponse;
 /// 请求类型
 typedef NS_ENUM(NSInteger, QWRequestMethod) {
-    /// POST
+    
     QWRequestMethodPOST,
-    /// GET
+    
     QWRequestMethodGET,
+    
+    QWRequestMethodPUT,
+    
+    QWRequestMethodHEAD,
+    
+    QWRequestMethodDELETE,
+    
+    QWRequestMethodPATCH,
 };
 
 ///请求成功
@@ -40,25 +48,27 @@ typedef void(^progressBlock)(NSProgress * _Nonnull uploadProgress);
 NS_ASSUME_NONNULL_BEGIN
 
 @interface QWBaseRequest : NSObject
-///请求结果是否缓存 默认NO
+/// 请求结果是否缓存 默认NO
 //@property (nonatomic, assign) BOOL isCache;
-///请求地址
+/// 请求地址
 @property (nonatomic, copy)   NSString * requestURL;
-/// 请求参数
-@property (nonatomic, strong) NSDictionary * requestParameters;
-/// 公共参数
-@property (nonatomic, strong) NSDictionary * publicParameters;
-///请求类型 默认POST
+/// 请求类型 默认POST
 @property (nonatomic, assign) QWRequestMethod requestType;
-///服务器接收
+/// 服务器接收
 @property (nonatomic, assign) QWSerializerType serializerType;
-///请求类型 String
+/// 请求类型 String
 @property (nonatomic, copy , readonly) NSString * requestTypeStr;
-///数据模型 类名
+/// 数据模型 类名
 @property (nonatomic, copy) NSString * modelName;
-///请求头
+/// 请求头 （优先使用 如为设置 将会加载 公共请求头）
 @property (nonatomic, strong) NSDictionary * requestHead;
-///响应对象类型
+/// 公共请求头（优先级较低，如有，需创建类继承该类 重写get方法）
+@property (nonatomic, strong) NSDictionary * requestPublicHead;
+/// 请求参数 （如有公共参数 将会追加到参数后）
+@property (nonatomic, strong) NSDictionary * requestParameters;
+/// 公共参数 （需创建类继承该类 重写get方法）
+@property (nonatomic, strong) NSDictionary * publicParameters;
+/// 响应对象类型
 @property (nonatomic, copy) NSString * responseClassName;
 /**请求开始时至请求结束期间 是否禁用界面交互  默认NO*/
 @property (nonatomic, assign) BOOL isBanInteraction;

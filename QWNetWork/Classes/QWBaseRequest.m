@@ -35,8 +35,6 @@
     BOOL isSetHUD;
     /**当前请求是否设置了isBanInteraction属性，未设置使用全局配置*/
     BOOL isSetBanInteraction;
-    
-    NSDictionary *headDic;
 }
 /**请求成功*/
 @property (nonatomic, copy) successBlock success;
@@ -63,24 +61,43 @@
     if(self.isBanInteraction){
         [self currentViewController].view.userInteractionEnabled = NO;
     }
-    /// 是否有公共参数追加
+    /** 优先使用 当前请求的请求头 ，如果当前请求头未设置,尝试加载公共请求头（继承当前类，重写requestHead属性的get方法）*/
+    if(self.requestPublicHead.count>0){
+        NSMutableDictionary *requestHeadDic = [NSMutableDictionary dictionaryWithDictionary:self.requestHead];
+        [requestHeadDic addEntriesFromDictionary:self.requestPublicHead];
+        self.requestHead = requestHeadDic;
+    }
+    /** 追加公共参数  （如有公共参数 ,继承当前类，重写publicParameters属性的get方法）*/
     if(self.publicParameters.count>0){
         NSMutableDictionary *requestDic = [NSMutableDictionary dictionaryWithDictionary:self.requestParameters];
         [requestDic addEntriesFromDictionary:self.publicParameters];
         self.requestParameters = requestDic;
     }
-    /** 优先使用 当前请求的请求头 ，如果当前请求头未设置请求头 尝试加载公共请求头（继承当前类，重写requestHead属性的get方法）*/
-    headDic = _requestHead;
-    if(!headDic){
-        headDic = self.requestHead;
-    }
-    
     _isOngoing = YES;
-    if(self.requestType == QWRequestMethodPOST){
-        return [self post];
-    }else{
-        return  [self get];
+    NSURLSessionDataTask *task;
+    switch (self.requestType) {
+        case QWRequestMethodPOST:
+            task = [self post];
+            break;
+        case QWRequestMethodGET:
+            task = [self get];
+            break;
+        case QWRequestMethodPUT:
+            task = [self put];
+            break;
+        case QWRequestMethodHEAD:
+            task = [self head];
+            break;
+        case QWRequestMethodDELETE:
+            task = [self delete];
+            break;
+        case QWRequestMethodPATCH:
+            task = [self patch];
+            break;
+        default:
+            break;
     }
+    return task;
 }
 
 - (NSURLSessionDataTask *)startRequestWithSuccess:(successBlock)success
@@ -126,10 +143,10 @@
 #pragma mark - 内部函数
 - (NSURLSessionDataTask * )post{
     QWEAKSELF
-  
+    
     _dataTask = [QWNetRequest POSTWebServiceAPI:self.requestURL
                                       parameter:self.requestParameters
-                                           head:headDic
+                                           head:self.requestHead
                                  serializerType:self.serializerType
                                        progress:^(NSProgress *uploadProgress){
         if(weakSelf.progres) weakSelf.progres(uploadProgress);
@@ -145,21 +162,70 @@
     return _dataTask;
 }
 - (NSURLSessionDataTask *)get{
-    _dataTask = [QWNetRequest GETWebServiceAPI:self.requestURL
-                                     parameter:self.requestParameters
-                                          head:headDic
-                                serializerType:self.serializerType
-                                       success:^(id data) {
+    QWEAKSELF
+    _dataTask = [QWNetRequest GETWebServiceAPI:self.requestURL parameter:self.requestParameters head:self.requestHead serializerType:self.serializerType progress:^(NSProgress * _Nonnull uploadProgress) {
+        if(weakSelf.progres) weakSelf.progres(uploadProgress);
+    } success:^(id  _Nullable data) {
         GCD_MAIN(^{
             [self optionData:data orError:nil];
         })
-    }failure:^(id error) {
+    } failure:^(id  _Nonnull error) {
         GCD_MAIN(^{
             [self optionData:nil orError:error];
         })
     }];
     return _dataTask;
 }
+- (NSURLSessionDataTask * )put{
+    _dataTask = [QWNetRequest PUTWebServiceAPI:self.requestURL parameter:self.requestParameters head:self.requestHead serializerType:self.serializerType success:^(id  _Nullable data) {
+        GCD_MAIN(^{
+            [self optionData:data orError:nil];
+        })
+    } failure:^(id  _Nonnull error) {
+        GCD_MAIN(^{
+            [self optionData:nil orError:error];
+        })
+    }];
+    return _dataTask;
+}
+- (NSURLSessionDataTask * )head{
+    _dataTask = [QWNetRequest HEADWebServiceAPI:self.requestURL parameter:self.requestParameters head:self.requestHead serializerType:self.serializerType success:^(id  _Nullable data) {
+        GCD_MAIN(^{
+            [self optionData:data orError:nil];
+        })
+    } failure:^(id  _Nonnull error) {
+        GCD_MAIN(^{
+            [self optionData:nil orError:error];
+        })
+    }];
+    return _dataTask;
+}
+- (NSURLSessionDataTask * )delete{
+    _dataTask = [QWNetRequest DELETEWebServiceAPI:self.requestURL parameter:self.requestParameters head:self.requestHead serializerType:self.serializerType success:^(id  _Nullable data) {
+        GCD_MAIN(^{
+            [self optionData:data orError:nil];
+        })
+    } failure:^(id  _Nonnull error) {
+        GCD_MAIN(^{
+            [self optionData:nil orError:error];
+        })
+    }];
+    return _dataTask;
+}
+
+- (NSURLSessionDataTask * )patch{
+    _dataTask = [QWNetRequest PATCHWebServiceAPI:self.requestURL parameter:self.requestParameters head:self.requestHead serializerType:self.serializerType success:^(id  _Nullable data) {
+        GCD_MAIN(^{
+            [self optionData:data orError:nil];
+        })
+    } failure:^(id  _Nonnull error) {
+        GCD_MAIN(^{
+            [self optionData:nil orError:error];
+        })
+    }];
+    return _dataTask;
+}
+#pragma mark - 处理解析处理
 - (void)optionData:(id)responseObject orError:(NSError *)error{
     [self dismissHUD];
     if(self.isBanInteraction){
@@ -179,7 +245,11 @@
             _failure(response);
         }
         
+    }else if(self.requestType == QWRequestMethodHEAD){
+        _success(nil);
+        
     }else{
+        
         NSDictionary *obj = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
         _responseDic = obj;
         if([obj isKindOfClass:[NSDictionary class]]){
@@ -325,9 +395,24 @@
 }
 - (NSString *)requestTypeStr{
     NSString *requestTypeStr = @"POST";
-    switch (_requestType) {
+    switch (self.requestType) {
+        case QWRequestMethodPOST:
+            requestTypeStr = @"POST";
+            break;
         case QWRequestMethodGET:
-            requestTypeStr =  @"GET";
+            requestTypeStr = @"GET";
+            break;
+        case QWRequestMethodPUT:
+            requestTypeStr = @"PUT";
+            break;
+        case QWRequestMethodHEAD:
+            requestTypeStr = @"HEAD";
+            break;
+        case QWRequestMethodDELETE:
+            requestTypeStr = @"DELETE";
+            break;
+        case QWRequestMethodPATCH:
+            requestTypeStr = @"PATCH";
             break;
         default:
             break;

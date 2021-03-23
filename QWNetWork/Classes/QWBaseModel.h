@@ -30,10 +30,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)className;
 /// 打印所有属性，强烈建议试一试这个方法 方便快捷的创建模型类
 + (void)printPropertyWithDict:(NSDictionary *)dict;
-
-@property (nonatomic,assign) NSInteger Count;
-
-@property (nonatomic,copy) NSString * title;
 @end
 
 NS_ASSUME_NONNULL_END

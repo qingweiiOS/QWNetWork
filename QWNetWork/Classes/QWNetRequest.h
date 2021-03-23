@@ -37,12 +37,12 @@ NS_ASSUME_NONNULL_BEGIN
 @interface QWNetRequest : NSObject
 
 /**
- *  网络请求
+ *  网络请求 POST
  *
  *  @param webServiceAPI    请求地址
  *  @param parameterDic    请求参数
  *  @param headDic    请求头
- *  @param uploadProgress    上传进度
+ *  @param uploadProgress  进度
  *  @param success    请求成功回调
  *  @param failure    请求失败回调
  */
@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
                 success:(requestSuccess)success
                 failure:(requestFailure)failure;
 /**
- *  网络请求
+ *  网络请求 GET
  *
  *  @param webServiceAPI    请求地址
  *  @param parameterDic    请求参数
@@ -63,6 +63,84 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param failure    请求失败回调
  */
 + (id)GETWebServiceAPI:(NSString *)webServiceAPI
+             parameter:(NSDictionary *)parameterDic
+                  head:(NSDictionary *)headDic
+        serializerType:(QWSerializerType)SerializerType
+               success:(requestSuccess)success
+               failure:(requestFailure)failure DEPRECATED_MSG_ATTRIBUTE("请使用 GETWebServiceAPI:parameter:head:progress:serializerType:success:failure:");
+/**
+ *  网络请求 GET
+ *
+ *  @param webServiceAPI    请求地址
+ *  @param parameterDic    请求参数
+ *  @param uploadProgress   进度
+ *  @param headDic     请求头
+ *  @param success    请求成功回调
+ *  @param failure    请求失败回调
+ */
++ (id)GETWebServiceAPI:(NSString *)webServiceAPI
+             parameter:(NSDictionary *)parameterDic
+                  head:(NSDictionary *)headDic
+        serializerType:(QWSerializerType)SerializerType
+              progress:(uploadProgress)uploadProgress
+               success:(requestSuccess)success
+               failure:(requestFailure)failure;
+/**
+ *  网络请求 PUT
+ *
+ *  @param webServiceAPI    请求地址
+ *  @param parameterDic    请求参数
+ *  @param headDic     请求头
+ *  @param success    请求成功回调
+ *  @param failure    请求失败回调
+ */
++ (id)PUTWebServiceAPI:(NSString *)webServiceAPI
+             parameter:(NSDictionary *)parameterDic
+                  head:(NSDictionary *)headDic
+        serializerType:(QWSerializerType)SerializerType
+               success:(requestSuccess)success
+               failure:(requestFailure)failure;
+/**
+ *  网络请求 HEAD
+ *
+ *  @param webServiceAPI    请求地址
+ *  @param parameterDic    请求参数
+ *  @param headDic     请求头
+ *  @param success    请求成功回调
+ *  @param failure    请求失败回调
+ */
++ (id)HEADWebServiceAPI:(NSString *)webServiceAPI
+              parameter:(NSDictionary *)parameterDic
+                   head:(NSDictionary *)headDic
+         serializerType:(QWSerializerType)SerializerType
+                success:(requestSuccess)success
+                failure:(requestFailure)failure;
+/**
+ *  网络请求 DELETE
+ *
+ *  @param webServiceAPI    请求地址
+ *  @param parameterDic    请求参数
+ *  @param headDic     请求头
+ *  @param success    请求成功回调
+ *  @param failure    请求失败回调
+ */
+
++ (id)DELETEWebServiceAPI:(NSString *)webServiceAPI
+                parameter:(NSDictionary *)parameterDic
+                     head:(NSDictionary *)headDic
+           serializerType:(QWSerializerType)SerializerType
+                  success:(requestSuccess)success
+                  failure:(requestFailure)failure;
+/**
+ *  网络请求 PATCH
+ *
+ *  @param webServiceAPI    请求地址
+ *  @param parameterDic    请求参数
+ *  @param headDic     请求头
+ *  @param success    请求成功回调
+ *  @param failure    请求失败回调
+ */
++ (id)PATCHWebServiceAPI:(NSString *)webServiceAPI
                parameter:(NSDictionary *)parameterDic
                     head:(NSDictionary *)headDic
           serializerType:(QWSerializerType)SerializerType
