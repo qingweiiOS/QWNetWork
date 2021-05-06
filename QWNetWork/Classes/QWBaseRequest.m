@@ -266,12 +266,14 @@
                             NSArray *modelArray = [mClass jsonsToModelsWithJsons:response.data];
                             response.data = modelArray;
                         }
-                    }else{
+                    }else if([response.data isKindOfClass:[NSDictionary class]]){
                         if([response.data count]==0){
                             response.data = nil;
                         }else{
                             response.data = [mClass yy_modelWithJSON:response.data];
                         }
+                    }else{
+                        response.data = nil;
                     }
                 }
                 _response = response;

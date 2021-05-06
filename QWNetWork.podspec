@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'QWNetWork'
-  s.version          = '0.2.0'
+  s.version          = '0.2.1'
   s.summary          = '基于 AFNetWorking YYModel QWProgressHUD封装，封装程度高，可扩展性不足！'
 
 # This description is used to generate tags and improve search results.
